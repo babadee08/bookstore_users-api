@@ -1,18 +1,15 @@
 package users
 
 import (
-	"encoding/json"
-	"fmt"
 	"github.com/babadee08/bookstore_users-api/domain/users"
 	"github.com/babadee08/bookstore_users-api/services"
 	"github.com/gin-gonic/gin"
-	"io/ioutil"
 	"net/http"
 )
 
 func CreateUser(c *gin.Context) {
 	var user users.User
-	bytes, err := ioutil.ReadAll(c.Request.Body)
+	/*bytes, err := ioutil.ReadAll(c.Request.Body)
 	if err != nil {
 		// TODO: Handle error
 		return
@@ -21,6 +18,11 @@ func CreateUser(c *gin.Context) {
 	if err := json.Unmarshal(bytes, &user); err != nil {
 		fmt.Println(err.Error())
 		// TODO: Handle JSON error
+		return
+	}*/
+	// This function can replace the one above
+	if err := c.ShouldBindJSON(&user); err != nil {
+		// TODO: return bad request error to the client
 		return
 	}
 	result, saveErr := services.CreateUser(user)
