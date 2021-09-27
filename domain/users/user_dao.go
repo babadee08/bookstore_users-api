@@ -5,7 +5,7 @@ import (
 	"github.com/babadee08/bookstore_users-api/datasources/mysql/users_db"
 	"github.com/babadee08/bookstore_users-api/utils/date_utils"
 	"github.com/babadee08/bookstore_users-api/utils/errors"
-	"strings"
+	"github.com/babadee08/bookstore_users-api/utils/mysql_utils"
 )
 
 const (
@@ -29,10 +29,11 @@ func (user *User) Get() *errors.RestErr {
 	result := stmt.QueryRow(user.Id)
 
 	if err := result.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Email, &user.DateCreated); err != nil {
-		if strings.Contains(err.Error(), errorNoRows) {
+		return mysql_utils.ParseError(err)
+		/*if strings.Contains(err.Error(), errorNoRows) {
 			return errors.NewNotFoundError(fmt.Sprintf("user %v not found", user.Id))
 		}
-		return errors.NewInternalServerError(fmt.Sprintf("error when trying to get user %v: %v", user.Id, err.Error()))
+		return errors.NewInternalServerError(fmt.Sprintf("error when trying to get user %v: %v", user.Id, err.Error()))*/
 	}
 
 	/*if err := users_db.Client.Ping(); err != nil {
@@ -64,10 +65,11 @@ func (user *User) Save() *errors.RestErr {
 
 	insertResult, err := stmt.Exec(user.FirstName, user.LastName, user.Email, user.DateCreated)
 	if err != nil {
-		if strings.Contains(err.Error(), indexUniqueEmail) {
+		return mysql_utils.ParseError(err)
+		/*if strings.Contains(err.Error(), indexUniqueEmail) {
 			return errors.NewBadRequestError(fmt.Sprintf("email %v already exists", user.Email))
 		}
-		return errors.NewInternalServerError(fmt.Sprintf("Error when trying to save user: %v", err.Error()))
+		return errors.NewInternalServerError(fmt.Sprintf("Error when trying to save user: %v", err.Error()))*/
 	}
 
 	// Another way is to do this, but it's a little dangerous with worse performance
